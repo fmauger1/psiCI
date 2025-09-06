@@ -18,3 +18,22 @@ Use `psiCI` to perform configuration-interaction (CI) calculations with Psi4 usi
 **Examples folder:**
 * `Configuration_basis.ipynb` illustrates CI calculations with various sets of molecular orbitals (HF vs DFT)
 * `H2O_molecule.ipynb` illustrates CI calculations in the H<sub>2</sub>O molecule (with a 3500 configuration state basis)
+
+___
+## Reference
+- G. Visentin and F. Mauger, *Configuration-interaction calculations with density-functional theory molecular orbitals for modeling core-excited states in molecules,* in preparation (2025)
+```bibtex
+@article{Visentin2025,
+  title = {Configuration-interaction calculations with density-functional theory molecular orbitals for modeling core-excited states in molecules},
+  author = {Visentin, Giorgio and Mauger, Fran\c{c}ois},
+  journal = {in preparation},
+  year = {2025}
+}
+```
+For more information: <fmauger@lsu.edu>
+
+
+## Acknowledgments
+The development and implementation of `psiCI` was supported by the National Science Foundation under Grant No. PHY-2207656.
+
+[&uarr;](#table-of-contents)
