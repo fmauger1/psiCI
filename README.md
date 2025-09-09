@@ -21,10 +21,10 @@ Use `psiCI` to perform configuration-interaction (CI) calculations with Psi4 usi
 
 ___
 ## Reference
-- G. Visentin and F. Mauger, *Configuration-interaction calculations with density-functional theory molecular orbitals for modeling core-excited states in molecules,* in preparation (2025)
+- G. Visentin and F. Mauger, *Configuration-interaction calculations with density-functional theory molecular orbitals for modeling valence- and core-excited states in molecules,* in preparation (2025)
 ```bibtex
 @article{Visentin2025,
-  title = {Configuration-interaction calculations with density-functional theory molecular orbitals for modeling core-excited states in molecules},
+  title = {Configuration-interaction calculations with density-functional theory molecular orbitals for modeling valence- and core-excited states in molecules},
   author = {Visentin, Giorgio and Mauger, Fran\c{c}ois},
   journal = {in preparation},
   year = {2025}
