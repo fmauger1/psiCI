@@ -25,9 +25,10 @@
 
 # Configuration-interaction module using Psi4 with DFT/HF orbitals
 # 
-# Reference: G. Visentin and F. Mauger, Configuration-interaction calculations
-#            with density-functional theory molecular orbitals for modeling
-#            core-excited states in molecules, in preparation (2025)
+# Reference: G. Visentin and F. Mauger, "Configuration-interaction calculations 
+#            with density-functional theory molecular orbitals for modeling 
+#            valence- and core-excited states in molecules," arXiv:2509.08245
+#            (2025)
 
 import numpy as np
 import psi4
