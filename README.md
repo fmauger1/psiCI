@@ -26,7 +26,7 @@ ___
 @article{Visentin2025,
   title = {Configuration-interaction calculations with density-functional theory molecular orbitals for modeling valence- and core-excited states in molecules},
   author = {Visentin, Giorgio and Mauger, Fran\c{c}ois},
-  journal = {in preparation},
+  journal = {arXiv:2509.08245},
   year = {2025}
 }
 ```
