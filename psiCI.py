@@ -1,6 +1,6 @@
 # BSD 2-Clause License
 # 
-# Copyright (c) 2025, Francois Mauger
+# Copyright (c) 2026, Francois Mauger
 # 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -126,8 +126,8 @@ class psiCI:
     
     # Version information and control ==============================================
     __author__       = "G. Visentin & F. Mauger"
-    __version__      = "00.01.004"
-    __lastModified__ = "04/27/2025"
+    __version__      = "00.01.005"
+    __lastModified__ = "01/01/2026"
 
         # Change log
         # ----------   ---------   -------------------------------------------------
@@ -156,6 +156,9 @@ class psiCI:
         #  > Add support for multi-reference CIS(D)
         # 04/27/2025 | 00.01.004 | F. Mauger
         #  > Add support for RAS
+        # 01/01/2026 | 00.01.005 | F. Mauger
+        #  > Add support for CISDT
+        #  > Enforce default parameters dtype=int in setConfiguration
     
     # Class creation and initialization ============================================
     def __init__(self,waveFunction:psi4.core.RHF,numberElectron:int=-1,configuration:np.array=np.empty(0),display:bool=True,tolerance:float=1e-10):
@@ -486,8 +489,8 @@ class psiCI:
         return a, r, s
     
     # Build configuration state basis ==============================================
-    def setConfiguration(self,reference:np.array=np.empty(0),mode:str="CIS",active:np.array=np.empty(0),
-                         frozen:np.array=np.empty(0),noDouble:np.array=np.empty(0),noEmpty:np.array=np.empty(0)):
+    def setConfiguration(self,reference:np.array=np.empty(0,dtype=int),mode:str="CIS",active:np.array=np.empty(0,dtype=int),
+                         frozen:np.array=np.empty(0,dtype=int),noDouble:np.array=np.empty(0,dtype=int),noEmpty:np.array=np.empty(0,dtype=int)):
         """
         Set the configuration state basis
             Use setConfiguration to build the configuration-state basis for CI calculation.
@@ -495,19 +498,20 @@ class psiCI:
         Parameters
         ----------
         reference : numpy.array (default numpy.empty(0))
-            For CIS and CISD calculations, reference state configuration, defined as a numpy
-            vector of orbital indexes, with positive (resp. negative) indexes specifying up
-            (resp. down) spin orbitals. For instate [-1, -2, 1, 2] corresponds to the Slater
-            determinant formed by the two deepest-energy spin orbitals in each of the up and
-            down spin channels. If reference is left empty, a single reference singlet (for
-            even numberElectron) or doublet (odd, with the unparied electron in the up-spin
-            channel) state composed of the self.numberElectron deepest spin orbitals is used
-            for the reference. If a reference is specified, self.numberElectron is updated
-            to reflect the number of electrons associated with the reference.
+            For CIS, CISD, and CISDT calculations, reference state configuration, defined as
+            a numpy vector of orbital indexes, with positive (resp. negative) indexes
+            specifying up (resp. down) spin orbitals. For instate [-1, -2, 1, 2] corresponds
+            to the Slater determinant formed by the two deepest-energy spin orbitals in each
+            of the up and down spin channels. If reference is left empty, a single reference
+            singlet (for even numberElectron) or doublet (odd, with the unparied electron in
+            the up-spin channel) state composed of the self.numberElectron deepest spin
+            orbitals is used for the reference. If a reference is specified,
+            self.numberElectron is updated to reflect the number of electrons associated with
+            the reference.
 
-            For multi-reference CIS and CISD calculations, specify the different reference 
-            configurations in separate row of the reference matrix. For instance, using
-            [[-1, -2, 1, 2],[-1, -3, 1, 3]] corresponds to the first reference state with 
+            For multi-reference CIS, CISD, and CISDT calculations, specify the different
+            reference configurations in separate row of the reference matrix. For instance,
+            using [[-1, -2, 1, 2],[-1, -3, 1, 3]] corresponds to the first reference state with 
             two electron in the first two spatial orbitals and the second reference with two
             electrons in the first and third spatial orbitals.
 
@@ -525,6 +529,8 @@ class psiCI:
               * "CIS" sets the configuration basis for single-excitation type CI (CIS).
               * "CISD" sets the configuration basis for single- and double-excitation type
                 CI (CISD).
+              * "CISDT" sets the configuration basis for dingle-, double-, and triple-
+                excitation type CI (CISDT)
               * "RAS" sets the configuration basis for restricted active space type CI (RAS).
                 If no noDouble or noEmpty are specified, this corresponds to a complete
                 active space (CAS) model.
@@ -548,8 +554,8 @@ class psiCI:
             down spin and the first 2 spatial orbitals with up spin. If left empty, no orbitals
             are frozen.
             
-            For single- and multi-reference CIS and CISD calculations, only frozen orbitals
-            that are in the reference are considered.
+            For single- and multi-reference CIS, CISD, and CISDT calculations, only frozen
+            orbitals that are in the reference are considered.
 
             For RAS calculations, the number of frozen orbitals in each spin channel must be
             compatible with the number of electrons each hold (defined via the reference).
@@ -560,8 +566,8 @@ class psiCI:
             the spatial orbitals 5 and 6 may not be fully occupied. If left empty, no restriction
             on double occupation is imposed.
             
-            For single- and multi-reference CIS and CISD calculations, the noDouble constraint
-            is NOT imposed on the reference configuration(s).
+            For single- and multi-reference CIS, CISD, and COSDT calculations, the noDouble
+            constraint is NOT imposed on the reference configuration(s).
 
         noEmpty : numpy.array (default numpy.empty(0))
             Indexes of the spatial orbitals that may not be left empty, i.e., must have at 
@@ -569,7 +575,7 @@ class psiCI:
             the first two spatial orbitals should always hold at least one electron. If left empty,
             no restriction on empty occupation is imposed.
             
-            For single- and multi-reference CIS and CISD calculations, the noEmpty constraint
+            For single- and multi-reference CIS, CISD, and CISDT calculations, the noEmpty constraint
             is NOT imposed on the reference configuration(s).
         """
 
@@ -604,6 +610,8 @@ class psiCI:
             algo = 1
         elif mode.lower() == "cisd":
             algo = 2
+        elif mode.lower() == "cisdt":
+            algo = 3
         else:
             raise RuntimeError("Unknown configuration mode " + mode)
 
@@ -659,6 +667,16 @@ class psiCI:
                     for k in range(nbRef):
                         self.configuration = np.concatenate((self.configuration,
                                                      self.__configurationCID(reference[k],active,frozen,noDouble,noEmpty)))
+
+            # Add triple excitations
+            if algo > 2:
+                if nbRef == 1:
+                    self.configuration = np.concatenate((self.configuration,
+                                                     self.__configurationCIT(reference,active,frozen,noDouble,noEmpty)))
+                else:
+                    for k in range(nbRef):
+                        self.configuration = np.concatenate((self.configuration,
+                                                     self.__configurationCIT(reference[k],active,frozen,noDouble,noEmpty)))
 
             # Remove duplicates
             if nbRef > 0:
@@ -781,7 +799,7 @@ class psiCI:
         nCSB = int(nHoP*(nHoP-1)/2*len(actP)*(len(actP)-1)/2 + nHoN*(nHoN-1)/2*len(actN)*(len(actN)-1)/2 + nHoP*len(actP)*nHoN*len(actN))
         CSB  = np.tile(reference, (nCSB,1))
         
-        # Parse through single excitations
+        # Parse through double excitations
         n = 0
 
         for k in range(len(reference)):
@@ -811,6 +829,52 @@ class psiCI:
                                    CSB[n:n+len(actN)-m-1,l] = actN[m+1:]
                                    n += len(actN)-m-1
                 
+        # Return results
+        return self.__constrainedConfiguration(CSB,noDouble,noEmpty)
+
+    # Configuration state for triple excitations ===================================
+    def __configurationCIT(self,reference,active,frozen,noDouble,noEmpty):
+        """
+        Configuration state basis for single reference triple excitations
+            Internally, parse through all the possible excitations for one of the electrons
+            and then calls the CID routine to build the other excitations
+        """
+
+        # Initialization
+        refP = reference[reference > 0]
+        refN = reference[reference < 0]
+        
+        act = np.setdiff1d(active,reference)
+        actP = act[act > 0]
+        actN = act[act < 0]
+        
+        frz, _, iFrz = np.intersect1d(frozen,reference,return_indices=True)
+
+        CSB = np.empty((0,len(reference)),dtype=int)
+
+        # Parse through triple excitations
+        for k in range(len(reference)):
+            if all (iFrz != k):
+                if reference[k] > 0:                                                # first excitation in up-spin channel
+                    frz = np.unique(np.concatenate((np.setdiff1d(reference[0:k],refN),frozen)))
+                    for l in range(len(actP)):
+                        ref = reference.copy()
+                        ref[k] = actP[l]                                            # set first excitation
+                        CD = self.__configurationCID(ref,np.concatenate((actP[l+1:],actN)),np.concatenate((frz,[actP[l]])),noDouble,noEmpty)
+                        CSB = np.concatenate((CSB,CD),axis=0)
+                else:                                                               # first excitation in down-spin channel
+                    frz = np.unique(np.concatenate((np.setdiff1d(reference[0:k],refP),frozen)))
+                    for l in range(len(actN)):
+                        ref = reference.copy()
+                        ref[k] = actN[l]                                            # set first excitation
+                        CD = self.__configurationCID(ref,np.concatenate((actN[l+1:],actP)),np.concatenate((frz,[actN[l]])),noDouble,noEmpty)
+                        CSB = np.concatenate((CSB,CD),axis=0)
+
+        # Remove duplicates
+        CT = np.sort(CSB,axis=1);                                                   # remove permutations
+        _, ind = np.unique(CT,axis=0,return_index=True)                             # identify unique configurations
+        CSB = CSB[np.sort(ind)]                                                     # clean the configuration basis (keeping the order)
+        
         # Return results
         return self.__constrainedConfiguration(CSB,noDouble,noEmpty)
             
