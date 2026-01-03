@@ -1,10 +1,10 @@
 # psiCI: a configuration-interaction module using Psi4 with DFT/HF orbitals
 
-![Version](https://img.shields.io/badge/version-v00.01.004-blue)
+![Version](https://img.shields.io/badge/version-v00.01.005-blue)
 [![python](https://img.shields.io/badge/Python-3.12-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![License](https://img.shields.io/badge/license-BSD-lightgray)](https://github.com/fmauger1/psiCI/blob/main/LICENSE)
 
-Use `psiCI` to perform configuration-interaction (CI) calculations with Psi4 using density-functional theory (DFT) and Hartree-Fock (HF) orbitals. The module enable CI calculations using arbitrary configuration space for the CI expansion. It also provides support for building the configuration space associated with common active space (single- and multi-reference CIS(D) and CAS/RAS). `psiCI` is a Python class.
+Use `psiCI` to perform configuration-interaction (CI) calculations with Psi4 using density-functional theory (DFT) and Hartree-Fock (HF) orbitals. The module enable CI calculations using arbitrary configuration space for the CI expansion. It also provides support for building the configuration space associated with common active space (single- and multi-reference CIS(DT) and CAS/RAS). `psiCI` is a Python class.
 
 **Dependencies:** `psiCI` requires the `numpy`, `scipy`, `itertools`, and `psi4` packages.
 
