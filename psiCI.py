@@ -126,7 +126,7 @@ class psiCI:
     
     # Version information and control ==============================================
     __author__       = "G. Visentin & F. Mauger"
-    __version__      = "00.01.005"
+    __version__      = "00.01.006"
     __lastModified__ = "01/01/2026"
 
         # Change log
@@ -159,6 +159,9 @@ class psiCI:
         # 01/01/2026 | 00.01.005 | F. Mauger
         #  > Add support for CISDT
         #  > Enforce default parameters dtype=int in setConfiguration
+        # 02/04/2026 | 00.01.006 | F. Mauger
+        #  > Print the sign of the configuration-state amplitude coefficients in 
+        #    analyzeSpectrum
     
     # Class creation and initialization ============================================
     def __init__(self,waveFunction:psi4.core.RHF,numberElectron:int=-1,configuration:np.array=np.empty(0),display:bool=True,tolerance:float=1e-10):
@@ -902,7 +905,11 @@ class psiCI:
     def analyzeSpectrum(self,CI:np.array,state:np.array=np.empty(0),tolerance:float=1e-2):
         """
         Analyze the spectrum of a CI matrix
-            Use analyzeSpectrum to display the spectrum analysis of a CI matrix.
+            Use analyzeSpectrum to display the spectrum analysis of a CI matrix. For each 
+            selected eigen state of the CI matrix, the function prints out the list of 
+            configurations whose population (amplitude squared) is larger than a set threshold.
+            Specifically, it displays the sign of the amplitude (+/-), followed by the 
+            population (%), and finally the configuration.
 
         Parameters:
         -----------
@@ -959,5 +966,9 @@ class psiCI:
         
         for k in range(len(V)):
             if np.abs(V[k])**2 > tol:
-                print("    > %#7.3f %% " % np.abs(10*V[k])**2,end="")
+                if V[k] > 0:
+                    print("    > (+) ",end="")
+                else:
+                    print("    > (-) ",end="")
+                print("%#7.3f %% " % np.abs(10*V[k])**2,end="")
                 print(str(self.configuration[k,:]))
