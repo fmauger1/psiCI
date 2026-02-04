@@ -1,6 +1,6 @@
 # psiCI: a configuration-interaction module using Psi4 with DFT/HF orbitals
 
-![Version](https://img.shields.io/badge/version-v00.01.005-blue)
+![Version](https://img.shields.io/badge/version-v00.01.006-blue)
 [![python](https://img.shields.io/badge/Python-3.12-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![License](https://img.shields.io/badge/license-BSD-lightgray)](https://github.com/fmauger1/psiCI/blob/main/LICENSE)
 
